@@ -1,8 +1,12 @@
 "use strict";
 
+const PORT = 4000;
+
+let express = require("express");
 let mysql = require("mysql");
 let model = require("node-model.js");
 
+let app = express();
 let db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -26,9 +30,19 @@ db.connect();
     console.log(count);
 });*/
 
-const query = `select * from accidents WHERE accident_severity > 1;`;
+const query = `select * from accidents_full WHERE id < 5;`;
 
 console.log("query");
 db.query(query, (error, results, fields)=> {
-    console.log(results);
+    for (let i = 0; i < 4; i++) {
+        console.log(results[i].id);
+    }
+});
+
+app.get("/", function(req, res) {
+    res.send("Hello world");
+});
+
+app.listen(PORT, function(data) {
+    console.log("Listening on port " + PORT);
 });
