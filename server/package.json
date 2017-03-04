@@ -1,0 +1,24 @@
+{
+  "name": "saferaccidents",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arghasarkar/hackupc.git"
+  },
+  "author": "The best coders",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/arghasarkar/hackupc/issues"
+  },
+  "homepage": "https://github.com/arghasarkar/hackupc#readme",
+  "dependencies": {
+    "express": "^4.15.0",
+    "mysql": "^2.13.0",
+    "node-model.js": "^1.0.0"
+  }
+}
