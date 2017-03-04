@@ -59,12 +59,12 @@
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
             zoom: 13,
-            center: {lat: 37.775, lng: -122.434},
-            mapTypeId: 'satellite'
+            center: {lat: 52.816729,lng: -1.147442},
+//            mapTypeId: 'satellite'
         });
 
         heatmap = new google.maps.visualization.HeatmapLayer({
-            data: getPoints(),
+            data: getAPIData(),
             map: map
         });
     }
@@ -606,6 +606,36 @@
             new google.maps.LatLng(37.751266, -122.403355)
         ];
     }
+
+    function getAPIData() {
+        const URL = "http://localhost:4000/?date=01/01/2005";
+
+        return fetch(URL).then(function(response) {
+            /*console.log(response.headers.get('Content-Type'));
+            console.log(response.headers.get('Date'));
+
+            console.log(response.status);
+            console.log(response.statusText);
+            console.log(response.type);
+            console.log(response.url);*/
+            return response.json().then(function(data) {
+
+                let latLng = [];
+
+                for (let i = 0; i < 100; i++) {
+                    console.log(data[i].Latitude, data[i].Longitude);
+                    latLng.push(new google.maps.LatLng(data[i].Latitude, data[i].Longitude));
+                }
+                console.log(latLng);
+                return latLng;
+            });
+
+        }).catch(function (err) {
+            console.log(err);
+        });
+        //return [new google.maps.LatLng(52.816729, -1.147)];
+    }
+
 </script>
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNxvPVrjy9jgxJs7XqvfEGsAx6Sx3BqqY&libraries=visualization&callback=initMap">

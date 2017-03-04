@@ -5,8 +5,12 @@ const PORT = 4000;
 let express = require("express");
 let mysql = require("mysql");
 let model = require("node-model.js");
+let cors = require("cors");
 
 let app = express();
+
+app.use(cors());
+
 let db = mysql.createConnection({
     host: 'localhost',
     user: 'root',

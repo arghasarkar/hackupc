@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/arghasarkar/hackupc#readme",
   "dependencies": {
+    "cors": "^2.8.1",
     "express": "^4.15.0",
     "mysql": "^2.13.0",
     "node-model.js": "^1.0.0"
