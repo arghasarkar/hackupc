@@ -30,17 +30,31 @@ db.connect();
     console.log(count);
 });*/
 
-const query = `select * from accidents_full WHERE id < 5;`;
+const query = `select * from accidents_full WHERE ;`;
 
 console.log("query");
-db.query(query, (error, results, fields)=> {
-    for (let i = 0; i < 4; i++) {
-        console.log(results[i].id);
-    }
-});
+
+function fetchFromDb(expression, res) {
+    const query = `select * from accidents_full WHERE ${expression};`;
+    db.query(query, (error, results, fields)=> {
+        //console.log(results);
+        res.send(results);
+    });
+}
+
 
 app.get("/", function(req, res) {
-    res.send("Hello world");
+    //console.log(req.query);
+    let str = "";
+
+    for (let param in req.query) {
+        str += param + "=" + `'${req.query[param]}'`;
+        console.log(req.query[param]);
+    }
+
+
+    console.log(fetchFromDb(str, res));
+    //res.send("Hello world");
 });
 
 app.listen(PORT, function(data) {
