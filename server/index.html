@@ -141,9 +141,11 @@
     <input type="text" id="from" placeholder="From"/>
     <input type="text" id="to" placeholder="To"/>
     <button type="submit" id="start" placeholder="start">Start</button>
-    <div id="location-wrapper"><p>Location: <br/><span id="location"></span</p></diV>
+    <div id="location-wrapper"><p>Location: <br/><span id="location"></span></p></diV>
     <div id="api-response">
-      <h3>Journey Warnings</h3>
+      <p id="fatal">0.3</p><!--
+      <p id="serious">Serious:</p>
+      <p id="casual">Light:</p>-->
     </div>
     <script>
 
@@ -473,7 +475,17 @@
               var endPoint = new google.maps.LatLng(destinationInput.lat, destinationInput.lng);
               count = (count + 1) % 200;
               var current = google.maps.geometry.spherical.interpolate(startPoint,endPoint, count/200);
-              document.getElementById('location').innerHTML = current;
+
+
+              current = current.toString();
+              current = current.substr(1).slice(0, -1).split(', ');
+              current[0] = current[0].substring(0, 6);
+              current[1] = current[1].substring(0, 7);
+
+              let currentLocation = document.getElementById('location').innerHTML = current[0] + ", " + current[1];
+
+              // make network request
+
               var icons = line.get('icons');
               icons[0].offset = (count / 2) + '%';
               line.set('icons', icons);
