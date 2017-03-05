@@ -472,6 +472,12 @@
             var count = 0;
 
             let probs = [];
+
+
+            for (let i = 0; i < 200; i++) {
+              let rand = Math.abs((Math.random() * (0.00120 - 0.0300) + 0.0200).toFixed(4));
+              probs.push(rand);
+            }
             window.intervalAnimation = window.setInterval(function() {
               var startPoint = new google.maps.LatLng(startInput.lat, startInput.lng);
               var endPoint = new google.maps.LatLng(destinationInput.lat, destinationInput.lng);
@@ -486,30 +492,16 @@
 
               let currentLocation = document.getElementById('location').innerHTML = current[0] + ", " + current[1];
 
-
-              let vals = [
-                "Casual: 0.052",
-                      "Casual: 0.049",
-                      "Casual: 0.048",
-                      "Medium: 0.035",
-                      "Casual: 0.023",
-                      "Serious: 0.08",
-                      "Casual: 0.01"
-              ];
-
-              // make network request
-
               var icons = line.get('icons');
               icons[0].offset = (count / 2) + '%';
               line.set('icons', icons);
               if (count % 20 == 0) {
-                let rand = Math.abs((Math.random() * (0.00120 - 0.0300) + 0.0200).toFixed(4));
-                probs.push(rand);
-                document.getElementById("fatal").innerHTML = rand;
+                document.getElementById("fatal").innerHTML = probs[count];
               }
               if (count >= 200) {
                 window.clearInterval(intervalAnimation);
               }
+              console.log(count);
           }, 100);
         };
 
