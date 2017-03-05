@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet">
+    <script src="jquery.js"></script>
+    <!-- This stylesheet contains specific styles for displaying the map
+         on this page. Replace it with your own styles as described in the
+         documentation:
+         https://developers.google.com/maps/documentation/javascript/tutorial -->
+         <style>
+    /* Always set the map height explicitly to define the size of the div
+     * element that contains the map. */
+    #map {
+      height: 100%;
+    }
+    /* Optional: Makes the sample page fill the window. */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    #from {
+      position: fixed;
+      font-weight: 200;
+      top: 10px;
+      right: 1%;
+      background: white;
+      height: 30px;
+      width: 30%;
+      box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.4);
+      border: none;
+      font-size: 24px;
+      padding: 10px;
+      box-sizing: border-box;
+      height: 50px;
+    }
+
+    #to {
+      position: fixed;
+      font-weight: 200;
+      top: 70px;
+      right: 1%;
+      background: white;
+      height: 30px;
+      width: 30%;
+      box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.4);
+      border: none;
+      font-size: 24px;
+      padding: 10px;
+      box-sizing: border-box;
+      height: 50px;
+    }
+
+    #start {
+      position: fixed;
+      font-weight: 200;
+      top: 130px;
+      right: 1%;
+      background: white;
+      width: 30%;
+      box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.4);
+      border: none;
+      font-size: 24px;
+      padding: 10px;
+      background: #6fb339;
+      color: white;
+      box-sizing: border-box;
+    }
+
+    #api-response {
+      font-family: 'Lato', sans-serif;
+      position: fixed;
+      font-weight: 200;
+      top: 260px;
+      right: 1%;
+      background: white;
+      width: 30%;
+      box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.4);
+      border: none;
+      font-size: 24px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    #sidebar {
+      width: 32%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      position: fixed;
+      right: 0px;
+      top: 0px;
+    }
+
+    #location-wrapper {
+      position: fixed;
+      right: 1%;
+      top: 190px;
+      color: white;
+      width: 30%;
+      font-size: 14px;
+      font-family: 'lato';
+    }
+  </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="sidebar"></div>
+    <input type="text" id="from" placeholder="From"/>
+    <input type="text" id="to" placeholder="To"/>
+    <button type="submit" id="start" placeholder="start">Start</button>
+    <div id="location-wrapper"><p>Location: <br/><span id="location"></span</p></diV>
+    <div id="api-response">
+      <h3>Journey Warnings</h3>
+    </div>
+    <script>
+      var startInput, destinationInput;
+      document.getElementById('start').addEventListener('click', function() {
+        var geocoder =  new google.maps.Geocoder();
+        console.log(startInput);
+        console.log(destinationInput);
+        if ($('#from').val()) {
+          geocoder.geocode( { 'address': $('#from').val()}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+              startInput = {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()}
+              if ($('#to').val()) {
+                geocoder.geocode( { 'address': $('#to').val()}, function(results, status) {
+                  if (status == google.maps.GeocoderStatus.OK) {
+                    destinationInput = {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()}
+                    window.clearInterval(window.intervalAnimation);
+                    initMap();
+                  } else {
+                  }
+                });
+              }
+            } else {
+            }
+          });
+        }
+      });
+
+      document.getElementById('from').addEventListener('keyup', function() {
+        // initMap();
+      });
+
+      document.getElementById('to').addEventListener('keyup', function() {
+        // initMap();
+      });
+
+      function initMap() {
+
+        var chicago = {lat: 51.50, lng: -0};
+        var indianapolis = {lat: 52.26, lng: -1.46};
+        var geocoder =  new google.maps.Geocoder();
+        var destination = {lat: 52.26, lng: -1.46};
+
+        if (!startInput || !destinationInput) return;
+        console.log("started");
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: chicago,
+          scrollwheel: false,
+          zoom: 7,
+          styles: [
+              {
+                  "featureType": "all",
+                  "elementType": "labels.text.fill",
+                  "stylers": [
+                      {
+                          "saturation": 36
+                      },
+                      {
+                          "color": "#000000"
+                      },
+                      {
+                          "lightness": 40
+                      }
+                  ]
+              },
+              {
+                  "featureType": "all",
+                  "elementType": "labels.text.stroke",
+                  "stylers": [
+                      {
+                          "visibility": "on"
+                      },
+                      {
+                          "color": "#000000"
+                      },
+                      {
+                          "lightness": 16
+                      }
+                  ]
+              },
+              {
+                  "featureType": "all",
+                  "elementType": "labels.icon",
+                  "stylers": [
+                      {
+                          "visibility": "off"
+                      }
+                  ]
+              },
+              {
+                  "featureType": "administrative",
+                  "elementType": "geometry.fill",
+                  "stylers": [
+                      {
+                          "color": "#000000"
+                      },
+                      {
+                          "lightness": 20
+                      }
+                  ]
+              },
+              {
+                  "featureType": "administrative",
+                  "elementType": "geometry.stroke",
+                  "stylers": [
+                      {
+                          "color": "#000000"
+                      },
+                      {
+                          "lightness": 17
+                      },
+                      {
+                          "weight": 1.2
+                      }
+                  ]
+              },
+              {
+                  "featureType": "landscape",
+                  "elementType": "geometry",
+                  "stylers": [
+                      {
+                          "color": "#000000"
+                      },
+                      {
+                          "lightness": 20
+                      }
+                  ]
+              },
+              {
+                  "featureType": "poi",
+                  "elementType": "geometry",
+                  "stylers": [
+                      {
+                          "color": "#000000"
+                      },
+                      {
+                          "lightness": 21
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road.highway",
+                  "elementType": "geometry.fill",
+                  "stylers": [
+                      {
+                          "color": "#000000"
+                      },
+                      {
+                          "lightness": 17
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road.highway",
+                  "elementType": "geometry.stroke",
+                  "stylers": [
+                      {
+                          "color": "#000000"
+                      },
+                      {
+                          "lightness": 29
+                      },
+                      {
+                          "weight": 0.2
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road.arterial",
+                  "elementType": "geometry",
+                  "stylers": [
+                      {
+                          "color": "#000000"
+                      },
+                      {
+                          "lightness": 18
+                      }
+                  ]
+              },
+              {
+                  "featureType": "road.local",
+                  "elementType": "geometry",
+                  "stylers": [
+                      {
+                          "color": "#000000"
+                      },
+                      {
+                          "lightness": 16
+                      }
+                  ]
+              },
+              {
+                  "featureType": "transit",
+                  "elementType": "geometry",
+                  "stylers": [
+                      {
+                          "color": "#000000"
+                      },
+                      {
+                          "lightness": 19
+                      }
+                  ]
+              },
+              {
+                  "featureType": "water",
+                  "elementType": "geometry",
+                  "stylers": [
+                      {
+                          "color": "#000000"
+                      },
+                      {
+                          "lightness": 17
+                      }
+                  ]
+              }
+          ]
+        });
+
+        var directionsDisplay = new google.maps.DirectionsRenderer({
+          map: map
+        });
+
+        // Set destination, origin and travel mode.
+        var request = {
+          destination: startInput,
+          origin: destinationInput,
+          travelMode: 'DRIVING'
+        };
+
+        // Pass the directions request to the directions service.
+        var directionsService = new google.maps.DirectionsService();
+        directionsService.route(request, function(response, status) {
+          if (status == 'OK') {
+            // Display the route on the map.
+            directionsDisplay.setDirections(response);
+            createPolyline(response);
+          }
+        });
+        function createPolyline(directionResult) {
+          line = new google.maps.Polyline({
+              path: directionResult.routes[0].overview_path,
+              strokeColor: '#FF0000',
+              strokeOpacity: 0.5,
+              strokeWeight: 4,
+              icons: [{
+                  icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 8,
+                    strokeColor: '#6fb339'
+                  },
+                  offset: '100%'
+                }]
+          });
+          line.setMap(map);
+          animate();
+        };
+
+        function animate() {
+            var count = 0;
+            window.intervalAnimation = window.setInterval(function() {
+              var startPoint = new google.maps.LatLng(startInput.lat, startInput.lng);
+              var endPoint = new google.maps.LatLng(destinationInput.lat, destinationInput.lng);
+              count = (count + 1) % 200;
+              var current = google.maps.geometry.spherical.interpolate(startPoint,endPoint, count/200);
+              document.getElementById('location').innerHTML = current;
+              var icons = line.get('icons');
+              icons[0].offset = (count / 2) + '%';
+              line.set('icons', icons);
+              if (count >= 200) {
+                window.clearInterval(intervalAnimation);
+              }
+          }, 100);
+        };
+
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOkqJqUOVaJwKpOuK4FXoQZYmsN_zJpLw&callback=initMap"
+        async defer></script>
+  </body>
+</html>
