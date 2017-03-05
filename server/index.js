@@ -64,7 +64,13 @@ function fieldsObjectToSQLString(fieldsArr) {
     if (size == 0) {
         str = "";
     } else if (size == 1) {
-        str += keys[0] + "='" + fieldsArr[keys[0]] + "' ";
+
+        if (keys[0].toLowerCase() == "limit") {
+            str = " LIMIT " + fieldsArr[keys[0]];
+        } else {
+            str += keys[0] + "='" + fieldsArr[keys[0]] + "' ";
+        }
+
     } else {
         str += keys[0] + "='" + fieldsArr[keys[0]] + "' ";
 
